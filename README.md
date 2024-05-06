@@ -26,5 +26,5 @@ Description
        password: 1234
 
        user
-       username: pear
-       password: pear1234
+       username: user
+       password: user1234

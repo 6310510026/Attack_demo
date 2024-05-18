@@ -29,3 +29,10 @@ class ContactForm(forms.ModelForm):
         super(ContactForm, self).__init__(*args, **kwargs)
         if user:
             self.instance.added_by = user
+
+class Product(models.Model):
+    name = models.CharField(max_length=100)
+    description = models.TextField()
+
+    def __str__(self):
+        return self.name

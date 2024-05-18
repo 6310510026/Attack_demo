@@ -1,10 +1,11 @@
 from django.shortcuts import render, redirect
-from database.models import Contact, ContactForm
+from database.models import Contact, ContactForm, Product
 from django.http import HttpResponseRedirect
 from django.urls import reverse
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
+from django.db import connection
 
 # Create your views here.
 def index(request):
@@ -55,7 +56,7 @@ def view_contact(request, id):
 @login_required
 def update_contact(request, id):
     contact = Contact.objects.get(id=id)
-    if contact.added_by != request.user:
+    if contact.added_by != request.user & request.user.is_superuser == False:
         raise PermissionDenied
     else:
         if request.method == "POST":
@@ -81,3 +82,22 @@ def delete_contact(request, id):
 @login_required
 def members(request):
     return render(request, 'members.html')
+
+def products_view(request):
+    products = []
+    result = None
+    if request.method == 'GET' and 'product_name' in request.GET:
+        product_name = request.GET['product_name']
+        with connection.cursor() as cursor:
+            cursor.execute(f"SELECT * FROM database_product WHERE name = '{product_name}'")
+            rows = cursor.fetchall()
+        
+        if rows:
+            for row in rows:
+                products.append({
+                    'name': row[1],
+                    'description': row[2]
+                })
+        else:
+            result = "Products not found!!"
+    return render(request, 'view_products.html', {'products': products, 'result': result})

@@ -2,7 +2,7 @@
 Test Access Controls
    6.3 Test with Limited Access
 Installation
-   1. cd test-access-controls
+   1. cd Attack_demo
    2. python -m venv .venv
    3. python -m pip install django
    4. python manage.py runserver
